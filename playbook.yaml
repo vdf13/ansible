@@ -4,3 +4,9 @@
   tasks:
     - name: Ping hosts
       ping:
+
+- name: Create user
+  hosts: virtual
+  roles:
+    - create_user
+      

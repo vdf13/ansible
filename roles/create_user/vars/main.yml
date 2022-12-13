@@ -1,0 +1,7 @@
+---
+# vars file for create_user
+user_name: test
+user_state: present
+user_groups: test
+user_pass: testpass
+salt_pass: salt
