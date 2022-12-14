@@ -11,8 +11,9 @@
     shell: /bin/bash
     #append: yes
 
-#- name: "Add .bashrc to include host and user"
-#  become: yes
-#  template:
-#    dest: '~{{user_name}}/.bashrc'
-#    src: templates/bashrc.j2
+- name: "Add .bashrc file for alias and prompt"
+  become: yes
+  template:
+    dest: '~{{user_name}}/.bashrc'
+    src: templates/bashrc.j2
+  when: user_state=='present'
