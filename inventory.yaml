@@ -6,12 +6,16 @@ virtual:
       ansible_host: 192.168.88.10
     mach3:
       ansible_host: 192.168.88.101
+    mach4:
+      ansible_host: 192.168.88.13
 web-mach:
   hosts:
     mach1:
       ansible_host: 192.168.88.8
     mach2:
       ansible_host: 192.168.88.10
+    mach4:
+      ansible_host: 192.168.88.13
 proxy:
   hosts:
     mach3:
