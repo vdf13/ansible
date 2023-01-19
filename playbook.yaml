@@ -35,7 +35,10 @@
       tags:
         - centos
 
-    - name: "Call the role update_os"
-      include_role:
-        name: update_os
+#    - name: "Call the role update_os"
+#      include_role:
+#        name: update_os
       
+    - name: "Call the role install_docker"
+      include_role:
+        name: install_docker
