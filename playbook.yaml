@@ -4,3 +4,41 @@
   tasks:
     - name: Ping hosts
       ping:
+
+- name: Create user
+  hosts: virtual
+  roles:
+    - create_user
+      
+- name: "Check if the user exist and create it if not"
+  ignore_errors: yes
+  hosts: virtual
+  become: yes
+  vars:
+    user_name: dockeruser
+    user_state: present
+    user_pass: '{{docker_pass}}'
+  tasks:
+    - name: "Check if the user exist" 
+      shell: "grep '{{user_name}}' /etc/passwd"
+      register: user_info
+
+    - name: "Print information about the user rc=0 if the user exist"
+      debug:      
+        var: user_info 
+      when: user_info.rc == 0
+
+    - name: "Use the role to create user"
+      include_role:
+        name: create_user
+      when: (user_info.rc == 1) or (user_state=="absent")
+      tags:
+        - centos
+
+#    - name: "Call the role update_os"
+#      include_role:
+#        name: update_os
+      
+    - name: "Call the role install_docker"
+      include_role:
+        name: install_docker
