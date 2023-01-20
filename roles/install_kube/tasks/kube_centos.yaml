@@ -1,0 +1,7 @@
+---
+# Tasks file forrr kube_install
+# When CENTOS server
+- name: "Modify firewall rules for MASTER"
+  command: firewall-cmd --permanent --add-port=179,443/tcp
+- name: "Reload firewall"
+  command: firewall-cmd --reload

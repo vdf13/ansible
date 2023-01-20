@@ -1,2 +1,10 @@
 ---
 # tasks file for install_kube
+- name: "Print a message to show the coorrect call of install_kube for CentOs"
+  debug: 
+    msg: " The role install_kube is called"
+
+- name: "Call installation module kube_centos.yaml for CentOS"
+  include_tasks:
+    file: kube_centos.yaml
+  when: ansible_facts['distribution'] == "CentOS"
