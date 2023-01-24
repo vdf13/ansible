@@ -1,7 +1,36 @@
 ---
-# Tasks file forrr kube_install
+# Tasks file for kube_install
 # When CENTOS server
+
 - name: "Modify firewall rules for MASTER"
-  command: firewall-cmd --permanent --add-port=179,443/tcp
+  firewalld:
+    permanent: yes
+    state: enabled
+    port: "{{ item }}" 
+  loop:
+      - 179/tcp
+      - 443/tcp
+      - 2379/tcp
+      - 2380/tcp
+      - 5473/tcp
+      - 6443/tcp
+      - 10250/tcp
+      - 10251/tcp
+      - 10252/tcp
+  when: ansible_facts['hostname'] == "haproxy"
+
+- name: "Modify firewall rules for WORKER"
+  firewalld:
+    permanent: yes
+    state: enabled
+    port: "{{ item }}" 
+  loop:
+    - 179/tcp
+    - 443/tcp
+    - 5473/tcp
+    - 10250/tcp
+    - 30000-32767/tcp
+  when: ansible_facts['hostname'] != "haproxy"
+
 - name: "Reload firewall"
   command: firewall-cmd --reload
