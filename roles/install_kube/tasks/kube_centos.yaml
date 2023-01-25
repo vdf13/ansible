@@ -34,3 +34,39 @@
 
 - name: "Reload firewall"
   command: firewall-cmd --reload
+
+- name: "Add the repository to install kubernetes"
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes YUM repo
+    baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-e17-x86_64"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-packages-key.gpg"
+    repo_gpgcheck: true
+    exclude: kube*
+  tags:
+    - repository
+   
+- name: "Désactiver la sécurité linux SELINUX"
+  shell:
+    cmd: "setenforce 0"
+  args:
+    executable: /bin/bash
+
+- name: "Modifier le fichier /etc/selinux/config"
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX=enforcing$'
+    line: 'SELINUX=disabled'
+
+- name: "Désactiver le swap pour que Kubernetes fonctionne"
+  command: swapoff -a
+
+- name: "Modifier le fichier /etc/fstab pour désactiver le swap"
+  replace:
+    path: /home/ansible/test
+    regexp: '^([^#].*?\sswap\s+swap\s+.*)'
+    replace: '# \g<1>'
+
+ 
