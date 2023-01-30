@@ -1,0 +1,6 @@
+---
+# handlers file for install_kube
+- name: "Desactivate SELINUX security"
+  command: "setenforce 0"
+
+
