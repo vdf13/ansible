@@ -37,12 +37,12 @@
 
 - name: "Add the repository to install kubernetes"
   yum_repository:
-    name: kubernetes
-    description: kubernetes YUM repo
-    baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+    name: Kubernetes
+    description: Kubernetes YUM repo
+    baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-e17-x86_64"
     enabled: true
     gpgcheck: true
-    gpgkey: "https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+    gpgkey: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-packages-key.gpg"
     repo_gpgcheck: true
     exclude: kube*
   tags:
@@ -72,16 +72,8 @@
     - bridge
   notify: "Apply the bridge network"
 
-- name: "Install Kubernetes package"
-  yum:
-    name:
-      - kubelet
-      - kubeadm
-      - kubectl
-    disable_excludes: kubernetes
-    state: present
-  tags:
-    - install
+- name: "Apply the bridge network"
+  command: sysctl --system
 
-- name: "Enable kubelet"
-  command: "systemctl enable --now kubelet" 
+
+ 

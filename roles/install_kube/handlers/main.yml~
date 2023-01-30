@@ -4,5 +4,3 @@
   command: "setenforce 0"
 
 
-- name: "Apply the bridge network"
-  command: sysctl --system
