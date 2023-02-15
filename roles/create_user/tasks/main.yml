@@ -5,15 +5,15 @@
   user:
     name: '{{user_name}}'
     state: '{{user_state}}'
-    groups: '{{user_groups}}' 
     password: "{{ user_pass | password_hash('sha512', salt_pass) }}"
     # next line remove is only affected if state is 'absent'    
     remove: yes
     shell: /bin/bash
-    append: yes
+    #append: yes
 
-#- name: "Add .bashrc to include host and user"
-#  become: yes
-#  template:
-#    dest: '~{{user_name}}/.bashrc'
-#    src: templates/bashrc.j2
+- name: "Add .bashrc file for alias and prompt"
+  become: yes
+  template:
+    dest: '~{{user_name}}/.bashrc'
+    src: templates/bashrc.j2
+  when: user_state=='present'

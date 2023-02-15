@@ -1,0 +1,35 @@
+---
+# tasks file for install_docker
+#- name: "Enable the repository"
+#  shell: "sudo /usr/bin/yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+
+- name: "remove docker"
+  yum:
+    name:
+      - docker-ce
+    state: absent
+  when: install == "no"
+
+- name: "Remove repository"
+  command: "rm /etc/yum.repos.d/docker-ce.repo"
+  notify: yum-clean-data
+  when: install == "no"
+
+- name: "yum-clean-data"
+  command: yum clean metadata
+
+
+- name: "add a repository to download Docker"
+  get_url:
+    url: "https://download.docker.com/linux/centos/docker-ce.repo"
+    dest: "/etc/yum.repos.d/docker-ce.repo"
+    mode: 0644    
+  when: install == "yes"
+
+- name: "Install docker in CentOS"
+  yum:
+    name:
+      - docker-ce
+    state: present
+  when: install == "yes"
+  
