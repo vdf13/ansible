@@ -1,0 +1,87 @@
+---
+# Tasks file for kube_install
+# When CENTOS server
+
+- name: "Modify firewall rules for MASTER"
+  firewalld:
+    permanent: yes
+    state: enabled
+    port: "{{ item }}" 
+  loop:
+      - 179/tcp
+      - 443/tcp
+      - 2379/tcp
+      - 2380/tcp
+      - 5473/tcp
+      - 6443/tcp
+      - 10250/tcp
+      - 10251/tcp
+      - 10252/tcp
+  when: ansible_facts['hostname'] == "haproxy"
+
+- name: "Modify firewall rules for WORKER"
+  firewalld:
+    permanent: yes
+    state: enabled
+    port: "{{ item }}" 
+  loop:
+    - 179/tcp
+    - 443/tcp
+    - 5473/tcp
+    - 10250/tcp
+    - 30000-32767/tcp
+  when: ansible_facts['hostname'] != "haproxy"
+
+- name: "Reload firewall"
+  command: firewall-cmd --reload
+
+- name: "Add the repository to install kubernetes"
+  yum_repository:
+    name: kubernetes
+    description: kubernetes YUM repo
+    baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+    repo_gpgcheck: true
+    exclude: kube*
+  tags:
+    - repository
+   
+- name: "Modifier le fichier /etc/selinux/config"
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX=enforcing$'
+    line: 'SELINUX=disabled'
+  notify: "Desactivate SELINUX security"
+
+- name: "Désactiver le swap pour que Kubernetes fonctionne"
+  command: swapoff -a
+
+- name: "Modifier le fichier /etc/fstab pour désactiver le swap"
+  replace:
+    path: /home/ansible/test
+    regexp: '^([^#].*?\sswap\s+swap\s+.*)'
+    replace: '# \g<1>'
+
+- name: "Set the bridge network by adding a file K8s.conf"
+  template:
+    dest: /etc/sysctl.d/k8s.conf 
+    src: templates/k8s.j2
+  tags:
+    - bridge
+  notify: "Apply the bridge network"
+
+- name: "Install Kubernetes package"
+  yum:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    disable_excludes: kubernetes
+    state: present
+  tags:
+    - install
+
+- name: "Enable kubelet"
+  command: "systemctl enable --now kubelet" 
