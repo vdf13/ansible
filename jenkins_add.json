@@ -1,0 +1,7 @@
+{
+"hosts_selected": "lamp",
+"state_selected": "present",
+"name_selected": "docker1",
+"install": "yes",
+"playbook_tittle": "PLAYBOOK INSTALL"
+}

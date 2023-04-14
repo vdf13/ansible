@@ -1,22 +1,25 @@
 ---
 # tasks file for update_os
-- name: "print a message to show if the call of the role is correct"
-  debug:
-    msg: "The role is called"
 
-- name: " Call Package update for CentOs"
+- name: " CENTOS / Call Package update for CentOs"
+  vars:
+    tittle: "CENTOS"
   include_tasks:
     file: centos.yaml 
   when: ansible_facts['distribution'] == "CentOS"
   tags:
     - update
+    - install
     - centos
 
-- name: " Call Package update for debian"
+- name: " DEBIAN / Call Package update for debian"
+  vars:
+    tittle: "DEBIAN"
   include_tasks:
     file: debian.yaml 
   when: ansible_facts['distribution'] == "Debian"
   tags:
     - update
+    - install
     - debian
 
