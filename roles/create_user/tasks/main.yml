@@ -1,6 +1,6 @@
 ---
-# tasks file for create_user
-- name: "Create user on remote host"
+# tasks file for create_user role
+- name: "Create the user on the remote host"
   become: yes
   user:
     name: '{{user_name}}'
@@ -10,10 +10,26 @@
     remove: yes
     shell: /bin/bash
     #append: yes
+  when: install == 'yes'
+  tags: install
 
 - name: "Add .bashrc file for alias and prompt"
   become: yes
   template:
     dest: '~{{user_name}}/.bashrc'
     src: templates/bashrc.j2
-  when: user_state=='present'
+  when: user_state == 'present'
+  tags: install
+
+- name: "Delete the user on the remote host"
+  become: yes
+  user:
+    name: '{{user_name}}'
+    state: '{{user_state}}'
+    #password: "{{ user_pass | password_hash('sha512', salt_pass) }}"
+    # next line remove is only affected if state is 'absent'    
+    remove: yes
+    shell: /bin/bash
+    #append: yes
+  when: install == 'no'
+  tags: delete
