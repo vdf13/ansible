@@ -8,6 +8,7 @@ Installer ces machines en utilisant les playbooks qui font appel à des rôles d
 - *Mise à jour de OS selon la version de la machine:  centos ou debian*
 - *Installation de Docker*
 
+
 ## Usage
 - ansible-playbook -e @jenkins_add.json -e @password.json --tags user,install playbook.yaml
 - *Choisir un des 2 fichiers [jenkins_add.json | jenkins_del.json]* 
@@ -21,3 +22,4 @@ Installer ces machines en utilisant les playbooks qui font appel à des rôles d
 
 - en cours de developpement : Role pour installer Jenkins ...
   - *Installation de Jenkins via une image docker*
+
