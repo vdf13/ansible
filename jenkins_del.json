@@ -1,0 +1,8 @@
+{
+"hosts_selected": "lamp",
+"state_selected": "absent",
+"name_selected": "docker1",
+"install":"no",
+"playbook_tittle": "PLAYBOOK DELETE" 
+
+}

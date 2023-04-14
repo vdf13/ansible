@@ -3,7 +3,7 @@
   debug:
     msg: "{{ansible_distribution}}"
 
-- name: " Package update if Debian linux"
+- name: " {{ tittle }} / Package update if {{ ansible_distribution }} linux"
   apt:
     force_apt_get: yes
     update_cache: yes
@@ -11,10 +11,11 @@
     state: latest
   when: ansible_facts['distribution'] == "Debian"
   tags:
+    - install
     - update
     - debian
 
-- name: " Remove old Installation of docker packages for Debian linux"
+- name: " {{ tittle }} / Remove old Installation of docker packages for {{ ansible_distribution }} linux"
   apt:
     force_apt_get: true
     autoremove: true
@@ -28,11 +29,11 @@
     state: absent
   when: ansible_facts['distribution'] == "Debian"
   tags:
-    - remove
+    - delete
     - debian
     - docker
 
-- name: " Installation of docker packages for Debian linux"
+- name: " {{  tittle }} / Installation of docker packages for {{ ansible_distribution }} linux"
   apt:
     force_apt_get: yes
     name:
@@ -43,6 +44,6 @@
     state: present
   when: ansible_facts['distribution'] == "Debian"
   tags:
-    - packages
+    - install
     - debian
     - docker

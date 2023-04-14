@@ -1,0 +1,75 @@
+---
+# tasks file for install_docker for Debian distribution
+- block:
+  # Part to add the repository
+
+  - name: "{{ tittle }} / Create the directory to store Docker gpg key"
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: '0755'
+
+  - name: "{{  tittle }} / Add Docker GPG apt key"
+    apt_key:
+      url: "https://download.docker.com/linux/debian/gpg"
+      state: '{{state_selected}}'
+      keyring: "/etc/apt/keyrings/docker.gpg"
+    when: install == "yes"
+
+  - name: "{{ tittle }} / Add the docker repository and sign-it with the gpg key"
+    apt_repository:
+      repo: "deb [signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian buster stable"
+      state: '{{state_selected}}'
+      filename: docker.list
+      update_cache: true
+    when: install == "yes"
+
+  # Part to add Docker
+
+  - name: "{{ tittle }} / Install docker in {{ ansible_distribution }}"
+    apt:
+      name:
+        - docker-ce
+      state: '{{state_selected}}'
+    when: install == "yes"
+
+  - name: "{{ tittle }} / Verify that the docker group exist"
+    group:
+      name: docker
+      state: '{{state_selected}}'
+
+  - name: "{{ tittle }} / Add the created user to the docker group"
+    user:
+      name: '{{name_selected}}'
+      append: yes
+      groups: docker
+    when: install == "yes"
+
+  - name: "{{ tittle }} / Message to load the group"
+    debug:
+      msg: "After the completion of the playbook don't forget to load the group to the user with the command: newgrp docker if needed"
+    when: install == "yes"
+
+  tags:
+    - install
+    - docker
+    - debian
+
+# Part to delete Docker
+- block:
+
+  - name: "{{ tittle }} / Remove docker"
+    apt:
+      force_apt_get: true
+      autoremove: true
+      purge: true
+      name:
+        - docker-ce
+        - docker-ce-cli
+      state: '{{state_selected}}'
+    when: install == "no"
+
+  tags:
+    - delete
+    - docker
+    - debian
